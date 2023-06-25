@@ -8,12 +8,15 @@
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 ## settings.py
+SCRAPEOPS_API_KEY = 'caef789a-7a01-43f8-8271-b8e0e7a486a1'
+SCRAPEOPS_PROXY_ENABLED = True
 
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
     'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
     'scrapy_fake_useragent.middleware.RandomUserAgentMiddleware': 400,
     'scrapy_fake_useragent.middleware.RetryUserAgentMiddleware': 401,
+    'scrapeops_scrapy_proxy_sdk.scrapeops_scrapy_proxy_sdk.ScrapeOpsScrapyProxySdk': 725,
 }
 ## settings.py
 
@@ -35,7 +38,8 @@ NEWSPIDER_MODULE = 'amazon_scraper.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = "amazon_scraper (+http://www.yourdomain.com)"
+USER_AGENT = "amazon_scraper"
+allowed_domains = ['amazon.in']
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
