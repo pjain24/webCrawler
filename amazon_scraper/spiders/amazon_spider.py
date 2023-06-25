@@ -1,17 +1,29 @@
 import scrapy
-from ..items import MyItem
 import json
 import re
+from scrapy import cmdline
 from urllib.parse import urljoin
+from scrapy.crawler import CrawlerProcess
+import schedule
+import time
 
 class AmazonSpider(scrapy.Spider):
     name = "amazon_spider"
-    start_urls = [
-        "https://www.amazon.in/dp/B09P13MTHZ",
-        "https://www.amazon.in/dp/B0BS1V2W98"
-    ]
+
+    start_urls = []
+
+    def __init__(self, *args, **kwargs):
+        super(AmazonSpider, self).__init__(*args, **kwargs)
+        self.start_urls = kwargs.pop('start_urls').split(',')
+        print("start urls are ", self.start_urls)
+
+    def start_requests(self):
+        print("starting requests ", self.start_urls)
+        for url in self.start_urls:
+            yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
+        # TODO: Get more data
         # print("response is ", response)
         image_data = json.loads(re.findall(r"colorImages':.*'initial':\s*(\[.+?\])},\n", response.text)[0])
         product_image = image_data[0]['hiRes']
@@ -29,3 +41,8 @@ class AmazonSpider(scrapy.Spider):
             "product_image": product_image,
             # "variant_data": variant_data,
         }
+
+    def crawl(start_urls):
+        cmd = "scrapy crawl amazon_spider -a start_urls=" + start_urls
+        print(cmd)
+        cmdline.execute(cmd.split())
